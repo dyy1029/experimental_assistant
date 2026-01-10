@@ -18,6 +18,7 @@ class ExpAssistant:
         self.dataset_black_set = []
         self.dataset_waite_set = []
         self.alg_scan_dir = ""
+        self.is_record_time = False
         self.parse_base_config()
         AlgInjector.scan_and_inject(self.alg_scan_dir)
 
@@ -49,6 +50,9 @@ class ExpAssistant:
         if self.config_dict.__contains__(ConfigEnum.ALG_SCAN_DIR.value):
             self.alg_scan_dir = self.config_dict.get(ConfigEnum.ALG_SCAN_DIR.value)
 
+        if self.config_dict.__contains__(ConfigEnum.IS_RECORD_TIME.value):
+            self.is_record_time = self.config_dict.get(ConfigEnum.IS_RECORD_TIME.value)
+
 def run():
     assis = ExpAssistant("/Users/dyy/project/python/experimental_assistant/alg_config.yaml")
     if assis.is_parallel:
@@ -69,7 +73,7 @@ def run_by_parallel(alg_list, func):
 
 def run_by_order(alg_name, alg_class, assis):
     dataset_list = os.listdir(assis.dataset_dir)
-    metric_recoder = metric_evaluate.MetricWriter(record_param=True, record_time=True)
+    metric_recoder = metric_evaluate.MetricWriter(record_param=True, record_time=assis.is_record_time)
     for dataset in dataset_list:
         # 数据集在黑名单中，跳过
         if dataset in assis.dataset_black_set:

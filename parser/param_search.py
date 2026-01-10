@@ -10,11 +10,15 @@ class ParamSearcher:
         param_combination = parser.get_param_combinations()
         print(f"algorithm {self.alg_class.__name__} parameter space size {len(param_combination)} ")
         for param in param_combination:
-            # add dataset info and cluster_num
+            # todo cluster_num config added by algorithm level config to determine
             param['cluster_num'] = len(np.unique(label_true))
+            if metric_recoder.get_metric_evaluate().record_time:
+                metric_recoder.get_metric_evaluate().timer_start(str(param))
             self.current_param = param
             alg = self.alg_class(features, **param)
             label_pre = alg.fit().predict()
+            if metric_recoder.get_metric_evaluate().record_time:
+                metric_recoder.get_metric_evaluate().timer_end(str(param))
             metric_recoder.record_best_metric(label_pre, label_true, str(param))
             iter_num += 1
             if iter_num % 20 == 0:

@@ -7,6 +7,7 @@ class ConfigEnum(enum.Enum):
     SPECIFIC_ALG_CONFIG_KEY = "specific"
 
     IS_PARALLEL_KEY = "is_parallel"
+    IS_RECORD_TIME = "is_record_time"
 
     DATASET_ROOT_DIR_KEY = "dataset_root_dir"
     EXPERIMENT_SAVE_DIR_KEY = "result_save_dir"
