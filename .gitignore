@@ -1,0 +1,8 @@
+# idea relative file
+.idea
+
+# system file
+.DS_Store
+
+# project file
+/result
