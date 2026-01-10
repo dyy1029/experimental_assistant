@@ -1,0 +1,109 @@
+# algorithm config file
+
+# base config，
+dataset_root_dir: "dataset/"
+result_save_dir: "result/"
+alg_scan_dir: "algorithm/"
+is_parallel: True
+
+# dataset black waite set config
+dataset_black_list: [
+".DS_Store"
+]
+
+dataset_waite_list: [
+"pasebased.csv",
+"Compound.csv"
+]
+
+# algorithm default config, using same param for all dataset
+default:
+  Kmeans:
+    range:
+      seed:
+        start: 0
+        end: 100
+        step: 1
+    fix:
+      center_init: "random"
+
+  KMeansSklearn:
+    range:
+      seed:
+        start: 0
+        end: 10
+        step: 1
+    fix:
+      center_init: "random"
+
+  DBSCAN:
+    dist_cache_path: "/Users/dyy/project/python/pycluster/resource/cache/Dbscan/"
+    range:
+      eps:
+        start: 0.05
+        end: 1
+        step: 0.01
+      mint_pts:
+        start: 1
+        end: 30
+        step: 1
+
+  Dpc:
+    dist_cache_path: "/Users/dyy/project/python/pycluster/resource/cache/Dpc/"
+    range:
+      bandwidth:
+        start: 0.05
+        end: 1
+        step: 0.01
+
+  DensityDecreaseClusterV2:
+    range:
+      density_k:
+        start: 40
+        end: 50
+        step: 1
+      graph_k:
+        dependency: "density_k"
+        start: 40
+        end: "density_k"  # 这里可以使用表达式
+        step: 1
+
+  WCKnnPC:
+    range:
+      large_k:
+        start: 5
+        end: 50
+        step: 1
+      less_k:
+        dependency: "large_k"
+        start: 5
+        end: "large_k"
+        step: 1
+
+  BorderPeel:
+    pre_handle_data: False
+    fix:
+      k: 20
+      border_percentile: 0.1
+      mean_border_eps: 0.15
+      max_iterations: 100
+      stopping_percentile: 0.01
+
+  NaturalBallCluster:
+    not_need_param: True
+
+
+# specific config, using different param for different dataset and algorithm
+specific:
+  dataset:
+#    s_TwoMoons:
+#      Kmeans:
+#        range:
+#          seed:
+#            start: 0
+#            end: 50
+#            step: 1
+#        fix:
+#          center_init: "kmeans++"
+
+
