@@ -4,7 +4,7 @@
 dataset_root_dir: "dataset/"
 result_save_dir: "result/"
 alg_scan_dir: "algorithm/"
-is_parallel: False
+is_parallel: True
 is_record_time: True
 
 # dataset black waite set config
@@ -13,8 +13,20 @@ dataset_black_list: [
 ]
 
 dataset_waite_list: [
-"pasebased.csv",
+"pathbased.csv",
 "Compound.csv"
+]
+
+#
+metric_list: [
+"NMI",
+"ARI"
+]
+
+#
+algorithm_list: [
+"Kmeans",
+"DBSCAN"
 ]
 
 # algorithm default config, algorithm level, using same param for all dataset

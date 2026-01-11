@@ -1,6 +1,7 @@
 import pandas as pd
 from sklearn.metrics import adjusted_rand_score, normalized_mutual_info_score
 import datetime
+from register import metric_evaluate_register
 
 # record the best experiment result of one algorithm in some datasets
 class MetricEvaluate:
@@ -10,9 +11,7 @@ class MetricEvaluate:
         self.best_metrics = {}
         self.iter_num = 0
         self.record_time = record_time
-        self.execute_time = {}
-        self.current_metric = None
-
+        self.execute_time = 0
     """
     invoke after function timer_end if you need record algorithm running time
     """
@@ -84,6 +83,75 @@ class MetricEvaluate:
         key = param if param is not None else self.iter_num
         if self.execute_time.__contains__(key):
             self.execute_time[key] = datetime.datetime.now().timestamp() - self.execute_time[key]
+
+class MetricRecorder:
+    def __init__(self, metrics, evaluates, record_param=False, record_time=False):
+        self.metrics = metrics
+        self.evaluates = evaluates
+        self.record_param = record_param
+        self.record_time = record_time
+        self.metric_evaluate = {}
+        self.best_metrics = {}
+
+        self.start_time = 0
+        self.execute_time = 0
+
+    def record_best_metric(self, label_true, label_pre, param=None):
+        for metric in self.metrics:
+            evaluate = self.evaluates[metric]
+            new_value = evaluate.metric_value(label_true, label_pre)
+            if not self.best_metrics.__contains__(metric):
+                self.best_metrics[metric] = new_value
+                if self.record_param:
+                    self.best_metrics[metric + "_param"] = param
+                if self.record_time:
+                    self.best_metrics[metric + "_time"] = self.execute_time
+            else:
+                old_value = self.best_metrics[metric]
+                re = evaluate.compare(old_value, new_value)
+                if re == 1:
+                    self.best_metrics[metric] = new_value
+                    if self.record_param:
+                        self.best_metrics[metric + "_param"] = param
+                    if self.record_time:
+                        self.best_metrics[metric + "_time"] = self.execute_time
+
+    """
+    invoke before algorithm start
+    """
+    def timer_start(self):
+        if not self.record_time:
+            return
+        self.execute_time = 0
+        self.start_time = datetime.datetime.now().timestamp()
+
+    """
+    invoke before function record_best_metric
+    """
+    def timer_end(self):
+        assert self.execute_time == 0 and self.start_time > 0
+        if not self.record_time:
+            return
+        self.execute_time = datetime.datetime.now().timestamp() - self.start_time
+
+class MetricWriterV2:
+    """
+    write each dataset metric to excel
+    """
+    def __init__(self, metrics):
+        self.df = pd.DataFrame(columns=metrics)
+
+    def append(self, dataset_name, best_metrics):
+        for metric, value in best_metrics.items():
+            self.df.loc[dataset_name, metric] = value
+
+    def to_excel(self, path):
+        if path is None or ''.__eq__(path):
+            return
+        self.df.to_excel(path)
+
+    def get_full_metric_info(self):
+        return self.df
 
 class MetricWriter:
     """

@@ -1,8 +1,6 @@
 import numpy as np
-from base.algorithm_base import AlgorithmBase
-from register.alg_injector import AlgInjector
+from algorithm.algorithm_base import AlgorithmBase
 
-@AlgInjector.AlgBean(alg_name="DBSCAN")
 class DBSCAN(AlgorithmBase):
     def __init__(self, features, **kwargs):
         super().__init__()
@@ -11,7 +9,7 @@ class DBSCAN(AlgorithmBase):
         self.labels_ = None
 
     def fit(self, features = None):
-        self.labels_= np.arange(0,self.features.shape[0],1)
+        self.labels_= np.random.randint(low=1, high=5, size=(self.features.shape[0],))
         return self
 
     def predict(self, predict = None):
